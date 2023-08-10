@@ -15,7 +15,7 @@ import static com.ybybcsgo.backend.utils.Http.getHtmlByPost;
 
 public class MaximService {
 
-    public static boolean ReplyMaximToGroup(String targetid, String msgid, JSONObject extraObject)
+    public static boolean OnMessageReceive(String targetid, String msgid, JSONObject extraObject)
     {
         String maximToSend = GetMaximFromFile();
         if (maximToSend.isEmpty())

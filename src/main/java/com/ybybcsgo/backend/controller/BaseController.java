@@ -1,5 +1,6 @@
 package com.ybybcsgo.backend.controller;
 
+import com.ybybcsgo.backend.service.GayService;
 import com.ybybcsgo.backend.service.MaximService;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,6 +40,18 @@ public class BaseController
             else if (Objects.equals(channelType, "GROUP")) {
                 JSONObject extraObject = detail.getJSONObject("extra");
 
+                String targetId = detail.getString("target_id");
+                String msgId = detail.getString("msg_id");
+                String content = detail.getString("content");
+
+                // Priority 1: Gay Module
+                if (content.contains("我是南通"))
+                {
+                    if (GayService.OnMessageReceive(targetId, msgId, extraObject))
+                        return "";
+                }
+
+                // Priority 2: Maxim Module
                 // 检查是否被@
                 if (extraObject.has("mention")) {
                     JSONArray mentionArray = extraObject.getJSONArray("mention");
@@ -58,9 +71,8 @@ public class BaseController
 
                     if (bMentioned)
                     {
-                        String targetId = detail.getString("target_id");
-                        String msgId = detail.getString("msg_id");
-                        MaximService.ReplyMaximToGroup(targetId, msgId, extraObject);
+                        if (MaximService.OnMessageReceive(targetId, msgId, extraObject))
+                            return "";
                     }
                 }
 
